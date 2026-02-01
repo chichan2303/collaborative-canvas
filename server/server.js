@@ -1,37 +1,33 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const { strokes, addStroke, undoLastStroke } = require("./state-manager");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static("client"));
+// ✅ IMPORTANT: Serve client folder
+app.use(express.static(path.join(__dirname, "../client")));
 
 io.on("connection", (socket) => {
-  console.log("Connected:", socket.id);
+  console.log("User connected:", socket.id);
 
-  socket.emit("init_canvas", strokes);
-
-  socket.on("drawing_step", (stroke) => {
-    addStroke(stroke);
-    socket.broadcast.emit("drawing_step", stroke);
-
-  socket.on("undo", () => {
-  const updatedStrokes = undoLastStroke(socket.id);
-  io.emit("redraw_all", updatedStrokes);
-});
-
+  socket.on("drawing_step", (data) => {
+    socket.broadcast.emit("drawing_step", data);
   });
 
   socket.on("undo", () => {
-    const updated = undoLastStroke(socket.id);
-    io.emit("redraw_all", updated);
+    io.emit("redraw_all");
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
 });
 
-server.listen(3000, () => {
-  console.log("Server running at http://localhost:3000");
+// ✅ IMPORTANT: Railway PORT
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
-
