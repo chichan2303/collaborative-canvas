@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#canvas {
+  display: block;
+}
+
+#undoBtn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
