@@ -1,46 +1,39 @@
-import { canvas, ctx, getCanvasCoordinates } from "./canvas.js";
-import { socket } from "./websocket.js";
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const socket = io(); // IMPORTANT: no URL here
 
 let drawing = false;
-let prevPos = null;
+let prev = null;
 
 canvas.addEventListener("mousedown", (e) => {
   drawing = true;
-  prevPos = getCanvasCoordinates(e);
+  prev = { x: e.offsetX, y: e.offsetY };
+});
+
+canvas.addEventListener("mouseup", () => {
+  drawing = false;
+  prev = null;
 });
 
 canvas.addEventListener("mousemove", (e) => {
   if (!drawing) return;
 
-  const pos = getCanvasCoordinates(e);
+  const curr = { x: e.offsetX, y: e.offsetY };
 
+  drawLine(prev, curr);
+  socket.emit("drawing_step", { prev, curr });
+
+  prev = curr;
+});
+
+socket.on("drawing_step", ({ prev, curr }) => {
+  drawLine(prev, curr);
+});
+
+function drawLine(p1, p2) {
   ctx.beginPath();
-  ctx.moveTo(prevPos.x, prevPos.y);
-  canvas.addEventListener("mousemove", (e) => {
-  if (!drawing) return;
-
-  const pos = getCanvasCoordinates(e);
-
-  const stroke = {
-    userId: socket.id,
-    start: prevPos,
-    end: pos,
-    color: "#000",
-    width: 4
-  };
-
-  socket.emit("drawing_step", stroke);
-
-  prevPos = pos;
-});
-
-
-  prevPos = pos;
-});
-
-canvas.addEventListener("mouseup", () => drawing = false);
-
-document.getElementById("undoBtn")
-  .addEventListener("click", () => {
-    socket.emit("undo");
-  });
+  ctx.moveTo(p1.x, p1.y);
+  ctx.lineTo(p2.x, p2.y);
+  ctx.stroke();
+}
