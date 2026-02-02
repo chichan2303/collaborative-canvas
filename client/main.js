@@ -45,3 +45,5 @@ function drawLine(p1, p2) {
   ctx.lineTo(p2.x, p2.y);
   ctx.stroke();
 }
+
+

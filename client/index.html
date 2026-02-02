@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <style>
-  body {
-    margin: 0;
-    padding: 10px;
-  }
-
-  #undoBtn {
-    padding: 8px 16px;
-    font-size: 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-
-  canvas {
-    border: 1px solid black;
-    display: block;
-  }
-</style>
-
 <head>
   <title>Collaborative Canvas</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+    }
+
+    #undoBtn {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    canvas {
+      border: 1px solid black;
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
 
-<canvas id="canvas" width="800" height="500"></canvas>
-<button id="undoBtn">Undo</button>
+  <button id="undoBtn">Undo</button>
+  <canvas id="canvas" width="800" height="500"></canvas>
 
-<canvas id="canvas" width="800" height="500"></canvas>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="main.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="main.js"></script>
 
 </body>
 </html>

@@ -1,17 +1,21 @@
-let strokes = [];
+const userStrokes = new Map();
 
-function addStroke(stroke) {
-  strokes.push(stroke);
-}
-
-function undoLastStroke(userId) {
-  for (let i = strokes.length - 1; i >= 0; i--) {
-    if (strokes[i].userId === userId) {
-      strokes.splice(i, 1);
-      break;
-    }
+export function addStroke(userId, stroke) {
+  if (!userStrokes.has(userId)) {
+    userStrokes.set(userId, []);
   }
-  return strokes;
+  userStrokes.get(userId).push(stroke);
 }
 
-module.exports = { strokes, addStroke, undoLastStroke };
+export function undoStroke(userId) {
+  if (!userStrokes.has(userId)) return;
+  userStrokes.get(userId).pop();
+}
+
+export function getAllStrokes() {
+  let all = [];
+  for (let strokes of userStrokes.values()) {
+    all = all.concat(strokes);
+  }
+  return all;
+}
