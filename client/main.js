@@ -5,6 +5,14 @@ const socket = io(); // IMPORTANT: no URL here
 
 let drawing = false;
 let prev = null;
+document.getElementById("undoBtn")
+  .addEventListener("click", () => {
+    socket.emit("undo");
+  });
+document.getElementById("undoBtn").onclick = () => {
+  alert("Undo clicked");
+};
+
 
 canvas.addEventListener("mousedown", (e) => {
   drawing = true;
